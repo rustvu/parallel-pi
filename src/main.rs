@@ -1,16 +1,15 @@
 //! Concurrent experiments for Monte-Carlo pi estimation.
 
-use rand::Rng;
+use rand::random;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 use std::time::Instant;
 
 fn monte_carlo_sim(n: usize) -> usize {
-    let mut rng = rand::thread_rng();
     let mut inside = 0;
     for _ in 0..n {
-        let x = rng.gen_range(-1.0..1.0);
-        let y = rng.gen_range(-1.0..1.0);
+        let x = random::<f64>();
+        let y = random::<f64>();
         if x * x + y * y <= 1.0 {
             inside += 1;
         }
@@ -91,7 +90,7 @@ fn shared_memory_pi(n: usize) -> f64 {
 }
 
 /// Continuous message-passing estimation
-/// Note: a similar co continuous approach can be used with shared memory, but
+/// Note: a similar continuous approach can be used with shared memory, but
 /// the main thread won't get notified when the estimation improves.
 fn continuous_message_passing_pi() {
     let n_chunk = 100_000;
@@ -132,5 +131,5 @@ fn main() {
         println!("{}: π = {},  elapsed: {:?}", name, pi, duration);
     }
 
-    continuous_message_passing_pi();
+    //continuous_message_passing_pi();
 }
